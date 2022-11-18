@@ -208,11 +208,13 @@ void *receiver(void *clientSocketPtr) {
             y = atoll(buff);
             ll l = modularExponentiation(y, 2, n);
             ll r = (x * modularExponentiation(logins[login], e, n)) % n;
-            std::cout <<prefix << "[DEBUG] L = " <<  l << ", R = " << r << std::endl;
+            std::cout << prefix << "[DEBUG] L = " << l << ", R = " << r << std::endl;
             if (l == r) {
                 send(clientSocket, std::to_string(200).c_str(), MAX_SIZE, 0);
+                std::cout << prefix << "Authentication PASSED!" << std::endl;
             } else {
                 send(clientSocket, std::to_string(215).c_str(), MAX_SIZE, 0);
+                std::cout << prefix << "Authentication FAILED!" << std::endl;
                 break;
             }
         }

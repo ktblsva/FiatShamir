@@ -153,6 +153,18 @@ ll primeNumberRandom(ll left, ll right) {
     }
 }
 
+ll coprime(ll n) {
+    ll s, x, y;
+    s = (rand() * rand() + rand()) % n;
+    while (gcd(s, n, 0, 0) != 1) {
+        s--;
+    }
+    if (s < 0) {
+        s *= -1;
+    }
+    return s;
+}
+
 void initSocket(int &clientSocket) {
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSocket < 0) {
@@ -202,7 +214,7 @@ int main() {
             //получаем n
             recv(clientSocket, buff, MAX_SIZE, MSG_NOSIGNAL);
             n = atoll(buff);
-            s = primeNumberRandom(1 << 20, n);
+            s = coprime(n);
             v = modularExponentiation(s, 2, n);
 
             std::cout << "[DEBUG] n =" << n << ", s = " << s << ", v = " << v << std::endl;
@@ -214,16 +226,16 @@ int main() {
             send(clientSocket, std::to_string(v).c_str(), MAX_SIZE, MSG_NOSIGNAL);
 
             //менеджер паролей :D
-            Document d;
-            rapidjson::Document::AllocatorType &allocator = d.GetAllocator();
-            d.SetObject();
-            d.AddMember("v", (int64_t) v, allocator);
-            d.AddMember("s", (int64_t) s, allocator);
-            std::ofstream fout(login + ".json", std::ios::binary);
-            OStreamWrapper out(fout);
-            Writer<OStreamWrapper> writer(out);
-            d.Accept(writer);
-            fout.close();
+//            Document d;
+//            rapidjson::Document::AllocatorType &allocator = d.GetAllocator();
+//            d.SetObject();
+//            d.AddMember("v", (int64_t) v, allocator);
+//            d.AddMember("s", (int64_t) s, allocator);
+//            std::ofstream fout(login + ".json", std::ios::binary);
+//            OStreamWrapper out(fout);
+//            Writer<OStreamWrapper> writer(out);
+//            d.Accept(writer);
+//            fout.close();
             close(clientSocket);
 
             std::ofstream loginsout(logins, std::ios::app);
@@ -238,7 +250,7 @@ int main() {
             std::cout << "Enter your login: ";
             std::cin >> login;
             if (std::find(possible_logins.begin(), possible_logins.end(), login) == possible_logins.end()) {
-                std::cout << "[WARN] You should register your profile first!" <<std::endl;
+                std::cout << "[WARN] You should register your profile first!" << std::endl;
                 continue;
             }
             //сообщаем серверу о том, что сейчас будет проходить аутентификация
@@ -247,19 +259,20 @@ int main() {
             recv(clientSocket, buff, MAX_SIZE, MSG_NOSIGNAL);
             n = atoll(buff);
 
-            std::ifstream ifs(login + ".json");
-            IStreamWrapper isw{ifs};
-            Document doc{};
-            doc.ParseStream(isw);
-            StringBuffer buffer{};
-            Writer<StringBuffer> writer{buffer};
-            doc.Accept(writer);
-            ll s = doc["s"].GetInt64();
-            ifs.close();
+            //так делать нельзя, но чтобы было легче проверять
+//            std::ifstream ifs(login + ".json");
+//            IStreamWrapper isw{ifs};
+//            Document doc{};
+//            doc.ParseStream(isw);
+//            StringBuffer buffer{};
+//            Writer<StringBuffer> writer{buffer};
+//            doc.Accept(writer);
+//            ll s = doc["s"].GetInt64();
+//            ifs.close();
 
-            std::cout << "[DEBUG] Your s is " << s << std::endl;
-//            std::cout << "Enter your s: ";
-//            std::cin >> s;
+//            std::cout << "[DEBUG] Your s is " << s << std::endl;
+            std::cout << "Enter your s: ";
+            std::cin >> s;
 
             //отправляем логин
             send(clientSocket, login.c_str(), MAX_SIZE, MSG_NOSIGNAL);
@@ -287,6 +300,7 @@ int main() {
                 }
             }
             std::cout << "[INFO] Authentication PASSED!" << std::endl;
+            close(clientSocket);
         } else {
             break;
         }
