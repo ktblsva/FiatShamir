@@ -1,0 +1,3 @@
+/home/sonya/CLionProjects/FiatShamirClient/cmake-build-debug/CMakeFiles/FiatShamirClient.dir
+/home/sonya/CLionProjects/FiatShamirClient/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/sonya/CLionProjects/FiatShamirClient/cmake-build-debug/CMakeFiles/rebuild_cache.dir

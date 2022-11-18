@@ -1,0 +1,37 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/sonya/CLionProjects/FiatShamir/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/snap/clion/209/bin/ninja/linux/ninja cmTC_3a74c && [1/2] Building C object CMakeFiles/cmTC_3a74c.dir/src.c.o
+[2/2] Linking C executable cmTC_3a74c
+[31mFAILED: [0mcmTC_3a74c 
+: && /usr/bin/cc   CMakeFiles/cmTC_3a74c.dir/src.c.o -o cmTC_3a74c   && :
+/usr/bin/ld: CMakeFiles/cmTC_3a74c.dir/src.c.o: в функции «main»:
+src.c:(.text+0x46): неопределённая ссылка на «pthread_create»
+/usr/bin/ld: src.c:(.text+0x52): неопределённая ссылка на «pthread_detach»
+/usr/bin/ld: src.c:(.text+0x5e): неопределённая ссылка на «pthread_cancel»
+/usr/bin/ld: src.c:(.text+0x6f): неопределённая ссылка на «pthread_join»
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
